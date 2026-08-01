@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👑</text></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Khushi's Memory Keeper — AI Birthday App & Family Archive</title>
+    
+    <!-- Google Fonts: Playfair Display for elegant headlines, Plus Jakarta Sans for UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Sacramento&display=swap" rel="stylesheet">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Khushi's Memory Keeper: A beautiful AI-powered birthday app with memory companion chat, interactive timeline, photo gallery, video messages, wishes wall, and secret birthday cake surprise." />
+  </head>
+  <body>
+    <!-- Ambient Floating Particle & Sparkle Canvas -->
+    <canvas id="ambient-canvas"></canvas>
+
+    <!-- Main Web Application Container -->
+    <div id="app-container" class="app-layout">
+      
+      <!-- Header Navigation Bar -->
+      <header class="app-header glass-card">
+        <div class="brand-group">
+          <div class="brand-icon">✨</div>
+          <div class="brand-titles">
+            <h1 class="brand-name">Khushi's Memory Keeper</h1>
+            <p class="brand-subtitle">AI Family Companion & Birthday Archive 👑</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <!-- Audio Music Toggle -->
+          <button id="btn-audio-toggle" class="glass-btn audio-btn" title="Toggle Ambient Birthday Music">
+            <div class="eq-bars" id="eq-bars">
+              <span></span><span></span><span></span>
+            </div>
+            <span id="audio-status-text">Music ON</span>
+          </button>
+
+          <!-- Add Memory Button -->
+          <button id="btn-open-add-memory" class="glass-btn primary-glow">
+            <span>+ Add Memory</span>
+          </button>
+
+          <!-- Secret Birthday Surprise Quick Button -->
+          <button id="btn-quick-surprise" class="glass-btn surprise-btn">
+            <span>🎁 Secret Vault</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Navigation Tabs -->
+      <nav class="nav-tabs-bar glass-card">
+        <button class="nav-tab active" data-tab="tab-ai-chat">
+          <span class="tab-icon">🤖</span>
+          <span class="tab-label">AI Companion</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-timeline">
+          <span class="tab-icon">📖</span>
+          <span class="tab-label">Memory Timeline</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-gallery">
+          <span class="tab-icon">📸</span>
+          <span class="tab-label">Photo Gallery</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-videos">
+          <span class="tab-icon">🎬</span>
+          <span class="tab-label">Video Memories</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-wishes">
+          <span class="tab-icon">💌</span>
+          <span class="tab-label">Birthday Wishes</span>
+        </button>
+      </nav>
+
+      <!-- Main Content Views Container -->
+      <main class="main-content-view">
+
+        <!-- ==================== TAB 1: AI COMPANION CHAT ==================== -->
+        <section id="tab-ai-chat" class="tab-pane active">
+          <div class="chat-wrapper glass-card">
+            
+            <div class="chat-header">
+              <div class="companion-avatar">🌸</div>
+              <div class="companion-info">
+                <h3>Family Memory Companion</h3>
+                <p><span class="online-indicator"></span> Responding strictly based on Khushi's family memories</p>
+              </div>
+            </div>
+
+            <!-- Quick Suggested Prompts Chips -->
+            <div class="prompt-chips-container">
+              <span class="chips-label">Try asking:</span>
+              <div class="chips-scroll">
+                <button class="prompt-chip" data-prompt="What's my funniest childhood memory?">🍦 Funniest childhood memory?</button>
+                <button class="prompt-chip" data-prompt="Who is the most annoying sibling?">😼 Most annoying sibling?</button>
+                <button class="prompt-chip" data-prompt="Tell me about my school days.">📚 Tell me about school days</button>
+                <button class="prompt-chip" data-prompt="Show me my childhood photos.">🖼️ Show childhood photos</button>
+                <button class="prompt-chip" data-prompt="What's my favorite food?">🍕 Favorite food?</button>
+                <button class="prompt-chip" data-prompt="What was my happiest birthday?">🎂 Happiest birthday?</button>
+              </div>
+            </div>
+
+            <!-- Chat Messages Log Container -->
+            <div id="chat-messages" class="chat-messages-body">
+              <!-- Initial Welcome Message from AI -->
+              <div class="chat-bubble ai-bubble">
+                <div class="bubble-avatar">🌸</div>
+                <div class="bubble-content">
+                  <p>Happy Birthday, Khushi! 💖 I am your personal <strong>Family Memory Companion</strong>. I have been blessed with all the sweetest, funniest, and most cherished memories shared by your parents, brother Rohan, best friends, and grandparents!</p>
+                  <p>Ask me anything about your childhood, school days, favorite foods, or funniest moments. What would you like to reminisce about today? ✨</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Input Form Bar -->
+            <form id="chat-form" class="chat-input-bar">
+              <input type="text" id="chat-input" placeholder="Ask about Khushi's memories..." autocomplete="off" required />
+              <button type="submit" class="send-btn" aria-label="Send Message">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                </svg>
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- ==================== TAB 2: MEMORY TIMELINE ==================== -->
+        <section id="tab-timeline" class="tab-pane">
+          <div class="section-header">
+            <h2>Khushi's Life Journey 📖</h2>
+            <p>A chronological celebration of milestones, laughter, and heartwarming moments.</p>
+          </div>
+
+          <!-- Timeline Filter Controls -->
+          <div class="timeline-filters">
+            <button class="filter-btn active" data-filter="all">All Memories</button>
+            <button class="filter-btn" data-filter="childhood">Childhood</button>
+            <button class="filter-btn" data-filter="school">School Days</button>
+            <button class="filter-btn" data-filter="siblings">Family & Siblings</button>
+            <button class="filter-btn" data-filter="birthday">Birthdays</button>
+          </div>
+
+          <!-- Timeline Stream -->
+          <div id="timeline-stream" class="timeline-container">
+            <!-- Timeline items rendered dynamically by main.js -->
+          </div>
+        </section>
+
+        <!-- ==================== TAB 3: PHOTO GALLERY ==================== -->
+        <section id="tab-gallery" class="tab-pane">
+          <div class="section-header">
+            <h2>Treasured Photo Gallery 📸</h2>
+            <p>Snapshot memories captured across the years with love.</p>
+          </div>
+
+          <div id="photo-grid" class="photo-grid-container">
+            <!-- Photo cards rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- ==================== TAB 4: VIDEO MEMORIES ==================== -->
+        <section id="tab-videos" class="tab-pane">
+          <div class="section-header">
+            <h2>Video Memories & Message Reels 🎬</h2>
+            <p>Emotional video messages and hilarious memory clips recorded by family and friends.</p>
+          </div>
+
+          <div id="video-grid" class="video-grid-container">
+            <!-- Video cards rendered dynamically -->
+          </div>
+        </section>
+
+        <!-- ==================== TAB 5: BIRTHDAY WISHES ==================== -->
+        <section id="tab-wishes" class="tab-pane">
+          <div class="section-header-flex">
+            <div>
+              <h2>Wall of Birthday Wishes 💌</h2>
+              <p>Heartfelt messages from the people who love Khushi most.</p>
+            </div>
+            <button id="btn-open-add-wish" class="glass-btn primary-glow">
+              <span>+ Leave a Wish</span>
+            </button>
+          </div>
+
+          <div id="wishes-wall" class="wishes-wall-grid">
+            <!-- Wishes cards rendered dynamically -->
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ==================== MODALS & OVERLAYS ==================== -->
+
+    <!-- 1. Add Memory Modal -->
+    <div id="modal-add-memory" class="modal-overlay hidden">
+      <div class="modal-card glass-card">
+        <div class="modal-header">
+          <h3>✨ Add New Memory to AI Vault</h3>
+          <button class="modal-close" data-close="modal-add-memory">&times;</button>
+        </div>
+        <form id="form-add-memory" class="modal-form">
+          <div class="form-group">
+            <label for="mem-title">Memory Title</label>
+            <input type="text" id="mem-title" placeholder="e.g. The Secret Treehouse Club" required />
+          </div>
+          <div class="form-group">
+            <label for="mem-category">Category</label>
+            <select id="mem-category">
+              <option value="childhood">Childhood Memory</option>
+              <option value="siblings">Sibling / Family Story</option>
+              <option value="school">School / College Days</option>
+              <option value="food">Favorite Food / Quirk</option>
+              <option value="birthday">Birthday Moment</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="mem-story">Memory Story (Details for AI Companion)</label>
+            <textarea id="mem-story" rows="4" placeholder="Tell the exact memory story in detail..." required></textarea>
+          </div>
+          <div class="form-group-row">
+            <div class="form-group">
+              <label for="mem-date">Date / Year</label>
+              <input type="text" id="mem-date" placeholder="e.g. Summer 2012" />
+            </div>
+            <div class="form-group">
+              <label for="mem-addedby">Your Name (Relation)</label>
+              <input type="text" id="mem-addedby" placeholder="e.g. Aunt Anita" required />
+            </div>
+          </div>
+          <button type="submit" class="glass-btn primary-glow full-width">Save Memory to AI Companion 💖</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 2. Add Wish Modal -->
+    <div id="modal-add-wish" class="modal-overlay hidden">
+      <div class="modal-card glass-card">
+        <div class="modal-header">
+          <h3>💌 Leave a Birthday Wish for Khushi</h3>
+          <button class="modal-close" data-close="modal-add-wish">&times;</button>
+        </div>
+        <form id="form-add-wish" class="modal-form">
+          <div class="form-group">
+            <label for="wish-sender">Your Name</label>
+            <input type="text" id="wish-sender" placeholder="e.g. Cousin Kabir" required />
+          </div>
+          <div class="form-group">
+            <label for="wish-relation">Relation / Role</label>
+            <input type="text" id="wish-relation" placeholder="e.g. Cousin / College Friend" required />
+          </div>
+          <div class="form-group">
+            <label for="wish-message">Your Heartfelt Wish</label>
+            <textarea id="wish-message" rows="4" placeholder="Write your birthday wishes for Khushi..." required></textarea>
+          </div>
+          <button type="submit" class="glass-btn primary-glow full-width">Post Birthday Wish 🎉</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- 3. Photo Lightbox Modal -->
+    <div id="modal-photo-lightbox" class="modal-overlay hidden">
+      <div class="lightbox-card glass-card">
+        <button class="modal-close lightbox-close" data-close="modal-photo-lightbox">&times;</button>
+        <div class="lightbox-img-wrapper">
+          <img id="lightbox-img" src="" alt="Memory Photo" />
+        </div>
+        <div class="lightbox-info">
+          <h3 id="lightbox-title">Photo Title</h3>
+          <p id="lightbox-date" class="lightbox-date">Date</p>
+          <p id="lightbox-caption" class="lightbox-caption">Caption</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Video Player Modal -->
+    <div id="modal-video-player" class="modal-overlay hidden">
+      <div class="video-modal-card glass-card">
+        <button class="modal-close" data-close="modal-video-player">&times;</button>
+        <div class="simulated-video-screen">
+          <div class="video-play-overlay" id="video-play-overlay">
+            <button id="btn-play-simulated-video" class="play-pulse-btn">▶ Play Video Message</button>
+          </div>
+          <img id="video-screen-img" src="/images/khushi_family.jpg" alt="Video frame" />
+          <div class="video-subtitles" id="video-subtitles">
+            <p id="video-sub-text">"Click Play to listen to the video message..."</p>
+          </div>
+        </div>
+        <div class="video-details">
+          <h3 id="video-player-title">Video Title</h3>
+          <p id="video-player-speaker" class="video-speaker font-highlight">From: Speaker</p>
+          <p id="video-player-desc">Description</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. HIDDEN SURPRISE SECTION: SECRET BIRTHDAY CAKE VAULT -->
+    <div id="modal-surprise-vault" class="modal-overlay hidden">
+      <div class="surprise-vault-card glass-card">
+        <button class="modal-close" data-close="modal-surprise-vault">&times;</button>
+        
+        <!-- Step A: Locked Challenge Screen -->
+        <div id="surprise-step-locked" class="surprise-step">
+          <div class="vault-lock-icon">🔒</div>
+          <h2>Secret Birthday Vault</h2>
+          <p>This magical section is locked for Khushi's special eyes only! To unlock, answer the secret birthday question:</p>
+          <div class="unlock-question-box">
+            <p class="question-text"><strong>"What is Khushi's ultimate favorite sweet dish?"</strong></p>
+            <div class="answer-options">
+              <button class="answer-btn" data-ans="wrong">Rasgulla</button>
+              <button class="answer-btn" data-ans="correct">Mango Kheer</button>
+              <button class="answer-btn" data-ans="wrong">Gulab Jamun</button>
+              <button class="answer-btn" data-ans="wrong">Chocolate Brownie</button>
+            </div>
+            <p id="unlock-feedback" class="unlock-feedback-msg"></p>
+          </div>
+        </div>
+
+        <!-- Step B: Unlocked Birthday Cake Ceremony -->
+        <div id="surprise-step-unlocked" class="surprise-step hidden">
+          <div class="surprise-badge">👑 MAGICAL BIRTHDAY CEREMONY 👑</div>
+          <h2 class="birthday-title-glowing">Happy Birthday, Dearest Khushi! 🎉</h2>
+          <p class="surprise-subtitle">Make a wish, blow out your candles, and cut your birthday cake!</p>
+
+          <!-- Interactive Cake Canvas / Graphic -->
+          <div class="cake-ceremony-container">
+            <div class="cake-wrapper">
+              <img src="/images/khushi_birthday.jpg" alt="Birthday Cake" class="cake-image" id="cake-image" />
+              <!-- Animated Glowing Candle Flames -->
+              <div class="candles-overlay" id="candles-overlay">
+                <div class="candle-flame flame-1"></div>
+                <div class="candle-flame flame-2"></div>
+                <div class="candle-flame flame-3"></div>
+                <div class="candle-flame flame-4"></div>
+                <div class="candle-flame flame-5"></div>
+              </div>
+            </div>
+
+            <!-- Cake Interaction Controls -->
+            <div class="cake-controls">
+              <button id="btn-blow-candles" class="glass-btn blow-btn">
+                💨 Blow Out Candles!
+              </button>
+              <button id="btn-cut-cake" class="glass-btn primary-glow cut-btn disabled" disabled>
+                🎂 Cut the Birthday Cake!
+              </button>
+            </div>
+          </div>
+
+          <!-- Handwritten Family Secret Letter -->
+          <div id="secret-family-letter" class="handwritten-letter glass-card hidden">
+            <h3>💌 A Secret Note for Khushi</h3>
+            <p class="script-font">"Khushi, on this special day, we want you to know how deeply loved and cherished you are. You bring infinite brightness into our home. No matter how old you get, you will always be our little snow princess. Keep shining, keep dreaming, and never stop being your wonderful self! Happy Birthday!"</p>
+            <div class="signatures">— With all our love: Mom, Dad, Rohan, Grandma & Besties ❤️</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Main Javascript Entrypoint -->
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
