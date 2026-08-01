@@ -15,7 +15,7 @@ const INITIAL_MEMORIES = [
   },
   {
     id: "mem-2",
-    title: "Brother Rohan & Khushi's Sibling Giggles",
+    title: "Brother Jain & Prem",
     category: "siblings",
     keywords: ["annoying", "sibling", "rohan", "brother", "pug", "dog", "goggles", "fight", "fun"],
     story: "Rohan is hands down the most loving yet annoying brother! One cozy afternoon, Rohan sneaked right next to Khushi with a goofy pug filter on his phone, pulled funny faces until Khushi couldn't stop giggling, and captured this legendary sibling selfie together.",
