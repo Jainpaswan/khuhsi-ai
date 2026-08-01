@@ -54,7 +54,11 @@
 
       <!-- Main Navigation Tabs -->
       <nav class="nav-tabs-bar glass-card">
-        <button class="nav-tab active" data-tab="tab-ai-chat">
+        <button class="nav-tab active" data-tab="tab-game">
+          <span class="tab-icon">🎮</span>
+          <span class="tab-label">Birthday Quest</span>
+        </button>
+        <button class="nav-tab" data-tab="tab-ai-chat">
           <span class="tab-icon">🤖</span>
           <span class="tab-label">AI Companion</span>
         </button>
@@ -79,8 +83,128 @@
       <!-- Main Content Views Container -->
       <main class="main-content-view">
 
+        <!-- ==================== TAB 0: BIRTHDAY QUEST 2D GAME ==================== -->
+        <section id="tab-game" class="tab-pane active">
+          <div class="game-section-header">
+            <h2>Khushi's Birthday Quest 🎮🎂</h2>
+            <p class="game-story-subtitle">✨ <em>Today is Khushi's birthday! Help her collect birthday surprises before the celebration begins.</em></p>
+          </div>
+
+          <div class="game-wrapper glass-card">
+            <!-- Game HUD Top Bar -->
+            <div class="game-hud-bar">
+              <div class="hud-item score-badge">
+                <span class="hud-label">Score</span>
+                <span id="game-score" class="hud-value">0</span>
+              </div>
+              <div class="hud-item level-badge">
+                <span id="game-level-name" class="hud-level-text">Level 1: Balloon Garden</span>
+              </div>
+              <div class="hud-item hearts-badge">
+                <span class="hud-label">Lives</span>
+                <span id="game-lives" class="hud-hearts">💖💖💖</span>
+              </div>
+              <div class="hud-item timer-badge">
+                <span class="hud-label">Timer</span>
+                <span id="game-timer" class="hud-value">0s</span>
+              </div>
+              <div id="game-powerup-badge" class="hud-item powerup-badge hidden">
+                <span id="powerup-icon">⚡</span>
+                <span id="powerup-label">Speed</span>
+              </div>
+              <button id="btn-game-pause" class="glass-btn game-pause-btn" title="Pause Game">
+                <span>⏸️ Pause</span>
+              </button>
+            </div>
+
+            <!-- Canvas Viewport Container -->
+            <div class="canvas-container" id="canvas-container">
+              <canvas id="game-canvas"></canvas>
+              
+              <!-- Start Screen Overlay -->
+              <div id="game-start-overlay" class="game-overlay-card">
+                <div class="overlay-content">
+                  <div class="game-title-badge">🌸 MOBILE 2D ADVENTURE 🌸</div>
+                  <h2>Khushi's Birthday Quest</h2>
+                  <p>Run, jump & fly through 3 magical pastel levels! Collect cakes, balloons, gifts & golden stars while dodging sleeping cats & rolling presents!</p>
+                  
+                  <div class="collectibles-legend">
+                    <span>🎂 Cake (+10)</span>
+                    <span>🎈 Balloon (+5)</span>
+                    <span>🎁 Gift (+20)</span>
+                    <span>⭐ Star (+50)</span>
+                  </div>
+
+                  <div class="powerups-legend">
+                    <span>🌈 Wings (Fly)</span>
+                    <span>⚡ Speed</span>
+                    <span>🧲 Magnet</span>
+                    <span>🛡️ Shield</span>
+                  </div>
+
+                  <button id="btn-start-game" class="glass-btn primary-glow start-game-btn">
+                    ▶ Start Birthday Quest!
+                  </button>
+                </div>
+              </div>
+
+              <!-- Pause Menu Overlay -->
+              <div id="game-pause-overlay" class="game-overlay-card hidden">
+                <div class="overlay-content">
+                  <h2>⏸️ Game Paused</h2>
+                  <p>Take a breath, birthday girl!</p>
+                  <div class="pause-actions">
+                    <button id="btn-resume-game" class="glass-btn primary-glow">▶ Resume Quest</button>
+                    <button id="btn-restart-level" class="glass-btn secondary-btn">🔄 Restart Level</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Level Complete Overlay -->
+              <div id="game-levelwin-overlay" class="game-overlay-card hidden">
+                <div class="overlay-content">
+                  <div class="confetti-icon">🎉</div>
+                  <h2 id="levelwin-title">Level Completed!</h2>
+                  <p id="levelwin-msg">Great job collecting surprises!</p>
+                  <button id="btn-next-level" class="glass-btn primary-glow">
+                    🌟 Start Next Level!
+                  </button>
+                </div>
+              </div>
+
+              <!-- Game Over Overlay -->
+              <div id="game-over-overlay" class="game-overlay-card hidden">
+                <div class="overlay-content">
+                  <div class="oops-icon">💔</div>
+                  <h2>Oops! Out of Lives!</h2>
+                  <p>Don't worry, Khushi! Try again and grab a Shield 🛡️ or Wings 🌈!</p>
+                  <button id="btn-retry-game" class="glass-btn primary-glow">
+                    🔄 Try Again!
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Touch Controls Overlay Bar -->
+            <div class="mobile-touch-controls">
+              <div class="dpad-leftright">
+                <button id="btn-touch-left" class="touch-btn dpad-btn" aria-label="Move Left">◀</button>
+                <button id="btn-touch-right" class="touch-btn dpad-btn" aria-label="Move Right">▶</button>
+              </div>
+              <div class="touch-instructions">
+                <span>Desktop: <strong>← → / A D</strong> to Move | <strong>Space / W / ↑</strong> to Jump & Fly</span>
+              </div>
+              <div class="dpad-jump">
+                <button id="btn-touch-jump" class="touch-btn jump-btn" aria-label="Jump or Fly">
+                  <span>⬆️ JUMP / FLY</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- ==================== TAB 1: AI COMPANION CHAT ==================== -->
-        <section id="tab-ai-chat" class="tab-pane active">
+        <section id="tab-ai-chat" class="tab-pane">
           <div class="chat-wrapper glass-card">
             
             <div class="chat-header">
@@ -359,6 +483,55 @@
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- 6. FINAL GAME CELEBRATION MODAL (LEVEL 3 COMPLETED) -->
+    <div id="modal-final-celebration" class="modal-overlay hidden">
+      <div class="final-celebration-card glass-card">
+        <canvas id="celebration-fireworks-canvas"></canvas>
+        <button class="modal-close" data-close="modal-final-celebration">&times;</button>
+        
+        <div class="celebration-inner-content">
+          <div class="celebration-crown">👑</div>
+          <div class="celebration-badge">✨ QUEST COMPLETED ✨</div>
+
+          <div class="giant-celebration-cake-container">
+            <div class="giant-cake">
+              <div class="cake-tier tier-3">🎂</div>
+              <div class="candles-overlay glowing-candles">
+                <div class="candle-flame flame-1"></div>
+                <div class="candle-flame flame-2"></div>
+                <div class="candle-flame flame-3"></div>
+                <div class="candle-flame flame-4"></div>
+                <div class="candle-flame flame-5"></div>
+              </div>
+            </div>
+          </div>
+
+          <h1 class="celebration-main-title">🎉 Happy Birthday, Khushi! ❤️</h1>
+          
+          <div class="celebration-message-box glass-card">
+            <p class="celebration-text">
+              May your life always be filled with happiness, love, laughter, and success.<br/>
+              You are an amazing sister, and this little game was made especially for you.<br/>
+              Enjoy your special day! 🎂🎈🎁
+            </p>
+          </div>
+
+          <div class="celebration-stats-summary" id="celebration-stats">
+            <!-- Populated dynamically with final score & time -->
+          </div>
+
+          <div class="celebration-actions">
+            <button id="btn-celebration-play-again" class="glass-btn primary-glow celebration-btn">
+              🎮 Play Again
+            </button>
+            <button id="btn-celebration-gallery" class="glass-btn secondary-btn celebration-btn">
+              📸 Memory Gallery
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 

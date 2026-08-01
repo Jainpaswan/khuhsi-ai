@@ -122,6 +122,160 @@ class BirthdayAudioSynth {
     } catch (e) {}
   }
 
+  playJump() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.audioCtx) return;
+    try {
+      const now = this.audioCtx.currentTime;
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(320, now);
+      osc.frequency.exponentialRampToValueAtTime(640, now + 0.15);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.18);
+    } catch (e) {}
+  }
+
+  playCollect(type = 'cake') {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.audioCtx) return;
+    try {
+      const now = this.audioCtx.currentTime;
+      const freqs = type === 'star' ? [523.25, 659.25, 783.99, 1046.50] :
+                    type === 'gift' ? [440, 554.37, 659.25] :
+                    type === 'balloon' ? [587.33, 783.99] : [523.25, 659.25];
+      freqs.forEach((f, idx) => {
+        const osc = this.audioCtx.createOscillator();
+        const gain = this.audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, now + idx * 0.04);
+        gain.gain.setValueAtTime(0, now + idx * 0.04);
+        gain.gain.linearRampToValueAtTime(0.09, now + idx * 0.04 + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.12);
+        osc.connect(gain);
+        gain.connect(this.audioCtx.destination);
+        osc.start(now + idx * 0.04);
+        osc.stop(now + idx * 0.04 + 0.12);
+      });
+    } catch (e) {}
+  }
+
+  playPowerUp() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.audioCtx) return;
+    try {
+      const now = this.audioCtx.currentTime;
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99];
+      notes.forEach((freq, idx) => {
+        const osc = this.audioCtx.createOscillator();
+        const gain = this.audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+        gain.gain.setValueAtTime(0.08, now + idx * 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.05 + 0.2);
+        osc.connect(gain);
+        gain.connect(this.audioCtx.destination);
+        osc.start(now + idx * 0.05);
+        osc.stop(now + idx * 0.05 + 0.2);
+      });
+    } catch (e) {}
+  }
+
+  playHit() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.audioCtx) return;
+    try {
+      const now = this.audioCtx.currentTime;
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.linearRampToValueAtTime(80, now + 0.2);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.25);
+    } catch (e) {}
+  }
+
+  playMeow() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.audioCtx) return;
+    try {
+      const now = this.audioCtx.currentTime;
+      const osc = this.audioCtx.createOscillator();
+      const gain = this.audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.exponentialRampToValueAtTime(850, now + 0.15);
+      osc.frequency.exponentialRampToValueAtTime(450, now + 0.4);
+      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+      osc.connect(gain);
+      gain.connect(this.audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 0.45);
+    } catch (e) {}
+  }
+
+  playLevelComplete() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.audioCtx) return;
+    try {
+      const now = this.audioCtx.currentTime;
+      const fanFare = [392.00, 523.25, 659.25, 783.99, 1046.50];
+      fanFare.forEach((freq, idx) => {
+        const osc = this.audioCtx.createOscillator();
+        const gain = this.audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+        gain.gain.setValueAtTime(0.1, now + idx * 0.09);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.3);
+        osc.connect(gain);
+        gain.connect(this.audioCtx.destination);
+        osc.start(now + idx * 0.09);
+        osc.stop(now + idx * 0.09 + 0.3);
+      });
+    } catch (e) {}
+  }
+
+  playVictorySong() {
+    if (this.isMuted) return;
+    this.init();
+    if (!this.audioCtx) return;
+    // Play upbeat full Happy Birthday tune
+    const melody = [
+      { note: 261.63, duration: 0.3 }, { note: 261.63, duration: 0.3 }, { note: 293.66, duration: 0.6 },
+      { note: 261.63, duration: 0.6 }, { note: 349.23, duration: 0.6 }, { note: 329.63, duration: 1.0 },
+      { note: 261.63, duration: 0.3 }, { note: 261.63, duration: 0.3 }, { note: 293.66, duration: 0.6 },
+      { note: 261.63, duration: 0.6 }, { note: 392.00, duration: 0.6 }, { note: 349.23, duration: 1.0 },
+      { note: 261.63, duration: 0.3 }, { note: 261.63, duration: 0.3 }, { note: 523.25, duration: 0.6 },
+      { note: 440.00, duration: 0.6 }, { note: 349.23, duration: 0.6 }, { note: 329.63, duration: 0.6 },
+      { note: 293.66, duration: 0.8 },
+      { note: 466.16, duration: 0.3 }, { note: 466.16, duration: 0.3 }, { note: 440.00, duration: 0.6 },
+      { note: 349.23, duration: 0.6 }, { note: 392.00, duration: 0.6 }, { note: 349.23, duration: 1.2 }
+    ];
+
+    let t = this.audioCtx.currentTime;
+    melody.forEach(item => {
+      this.playTone(item.note, item.duration, 'sine', 0.09);
+      t += item.duration * 0.85;
+    });
+  }
+
   startAmbientMusic() {
     this.isPlayingMusic = true;
     this.init();
@@ -166,3 +320,4 @@ class BirthdayAudioSynth {
 }
 
 export const audioSynth = new BirthdayAudioSynth();
+

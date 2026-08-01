@@ -1273,3 +1273,358 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==================== BIRTHDAY QUEST 2D GAME STYLES ==================== */
+.game-section-header {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.game-section-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--plum-dark);
+}
+
+.game-story-subtitle {
+  font-size: 0.95rem;
+  color: var(--primary-rose);
+  margin-top: 4px;
+}
+
+.game-wrapper {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* HUD Top Bar */
+.game-hud-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(157, 142, 199, 0.3);
+}
+
+.hud-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.hud-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--plum-muted);
+}
+
+.hud-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--plum-dark);
+}
+
+.hud-level-text {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: var(--primary-rose);
+}
+
+.hud-hearts {
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}
+
+.powerup-badge {
+  background: linear-gradient(135deg, #f0abfc, #c084fc);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  animation: pulseFloat 1.5s infinite ease-in-out;
+}
+
+.game-pause-btn {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+}
+
+/* Canvas Viewport */
+.canvas-container {
+  position: relative;
+  width: 100%;
+  max-width: 960px;
+  height: 440px;
+  margin: 0 auto;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  background: #ffe6f2;
+}
+
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Canvas Overlays */
+.game-overlay-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(45, 37, 54, 0.75);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 10;
+  color: #ffffff;
+  text-align: center;
+}
+
+.game-overlay-card.hidden {
+  display: none !important;
+}
+
+.overlay-content {
+  max-width: 520px;
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--plum-dark);
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  animation: scaleIn 0.3s ease;
+}
+
+.game-title-badge {
+  display: inline-block;
+  background: var(--lavender-light);
+  color: var(--lavender);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.collectibles-legend, .powerups-legend {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  margin: 12px 0;
+  font-weight: 700;
+}
+
+.start-game-btn {
+  margin-top: 14px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+}
+
+.pause-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.confetti-icon, .oops-icon {
+  font-size: 3.5rem;
+  margin-bottom: 10px;
+}
+
+/* Mobile Touch Controls Overlay */
+.mobile-touch-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-md);
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.dpad-leftright {
+  display: flex;
+  gap: 10px;
+}
+
+.touch-btn {
+  background: linear-gradient(135deg, #ffffff, #f1f5f9);
+  border: 2px solid var(--primary-rose);
+  color: var(--plum-dark);
+  font-size: 1.4rem;
+  font-weight: 800;
+  border-radius: 16px;
+  width: 64px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.05s ease, background 0.05s ease;
+}
+
+.touch-btn:active, .touch-btn.active {
+  transform: scale(0.92);
+  background: var(--primary-rose);
+  color: #ffffff;
+}
+
+.jump-btn {
+  width: 130px;
+  background: linear-gradient(135deg, #f472b6, #ec4899);
+  color: #ffffff;
+  border-color: #db2777;
+  font-size: 0.9rem;
+  box-shadow: 0 4px 16px rgba(236, 72, 153, 0.4);
+}
+
+.jump-btn:active, .jump-btn.active {
+  background: #be185d;
+}
+
+.touch-instructions {
+  font-size: 0.8rem;
+  color: var(--plum-muted);
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .canvas-container {
+    height: 320px;
+  }
+  .touch-instructions {
+    display: none;
+  }
+  .touch-btn {
+    width: 58px;
+    height: 48px;
+  }
+  .jump-btn {
+    width: 110px;
+  }
+}
+
+/* ==================== FINAL GAME CELEBRATION MODAL ==================== */
+.final-celebration-card {
+  max-width: 720px;
+  width: 100%;
+  padding: 32px 24px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  background: linear-gradient(135deg, rgba(255, 230, 242, 0.95), rgba(230, 240, 255, 0.95));
+}
+
+#celebration-fireworks-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.celebration-inner-content {
+  position: relative;
+  z-index: 2;
+}
+
+.celebration-crown {
+  font-size: 3rem;
+  animation: pulseFloat 2s infinite ease-in-out;
+}
+
+.celebration-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 4px 16px;
+  border-radius: 20px;
+  margin: 6px 0 12px;
+  letter-spacing: 1px;
+}
+
+.giant-celebration-cake-container {
+  margin: 12px 0 20px;
+}
+
+.giant-cake {
+  position: relative;
+  display: inline-block;
+  font-size: 5rem;
+}
+
+.glowing-candles {
+  top: 5px;
+  left: 20%;
+  width: 60%;
+  height: 25px;
+}
+
+.celebration-main-title {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  color: var(--plum-dark);
+  text-shadow: 0 0 18px rgba(244, 114, 182, 0.5);
+  margin-bottom: 16px;
+}
+
+.celebration-message-box {
+  background: rgba(255, 255, 255, 0.85);
+  padding: 20px 24px;
+  border-radius: var(--radius-md);
+  margin: 0 auto 20px;
+  max-width: 580px;
+  border: 2px dashed var(--primary-rose);
+}
+
+.celebration-text {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--plum-dark);
+  font-weight: 600;
+}
+
+.celebration-stats-summary {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--plum-muted);
+  margin-bottom: 20px;
+}
+
+.celebration-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.celebration-btn {
+  padding: 12px 28px;
+  font-size: 1.05rem;
+}
+

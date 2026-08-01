@@ -5,16 +5,19 @@ import './style.css';
 import { getMemories, saveMemory, INITIAL_PHOTOS, INITIAL_VIDEOS, INITIAL_WISHES } from './memoriesData.js';
 import { generateAIResponse } from './aiCompanion.js';
 import { audioSynth } from './audioSynth.js';
+import { BirthdayQuestGame } from './birthdayQuestGame.js';
 
 // Global State
 let currentPhotos = [...INITIAL_PHOTOS];
 let currentWishes = [...INITIAL_WISHES];
 let candlesBlown = false;
+let gameInstance = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   localStorage.removeItem("khushi_memories");
   initAmbientCanvas();
   initTabNavigation();
+  initBirthdayQuestGame();
   initAIChat();
   renderTimeline('all');
   renderPhotoGallery();
@@ -92,21 +95,34 @@ function initAmbientCanvas() {
 }
 
 /* ==================== TAB NAVIGATION ==================== */
-function initTabNavigation() {
+function switchToTab(targetId) {
   const tabs = document.querySelectorAll('.nav-tab');
   const panes = document.querySelectorAll('.tab-pane');
 
+  tabs.forEach(t => {
+    if (t.getAttribute('data-tab') === targetId) {
+      t.classList.add('active');
+    } else {
+      t.classList.remove('active');
+    }
+  });
+
+  panes.forEach(p => {
+    if (p.id === targetId) {
+      p.classList.add('active');
+    } else {
+      p.classList.remove('active');
+    }
+  });
+}
+
+function initTabNavigation() {
+  const tabs = document.querySelectorAll('.nav-tab');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       audioSynth.playButtonClick();
       const targetId = tab.getAttribute('data-tab');
-
-      tabs.forEach(t => t.classList.remove('active'));
-      panes.forEach(p => p.classList.remove('active'));
-
-      tab.classList.add('active');
-      const targetPane = document.getElementById(targetId);
-      if (targetPane) targetPane.classList.add('active');
+      switchToTab(targetId);
     });
   });
 }
@@ -551,3 +567,256 @@ function escapeHTML(str) {
     tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
   );
 }
+
+/* ==================== KHUSHI'S BIRTHDAY QUEST GAME CONTROLLER ==================== */
+function initBirthdayQuestGame() {
+  const canvas = document.getElementById('game-canvas');
+  if (!canvas) return;
+
+  const scoreEl = document.getElementById('game-score');
+  const levelNameEl = document.getElementById('game-level-name');
+  const livesEl = document.getElementById('game-lives');
+  const timerEl = document.getElementById('game-timer');
+  const powerupBadge = document.getElementById('game-powerup-badge');
+  const powerupIcon = document.getElementById('powerup-icon');
+  const powerupLabel = document.getElementById('powerup-label');
+
+  const startOverlay = document.getElementById('game-start-overlay');
+  const pauseOverlay = document.getElementById('game-pause-overlay');
+  const levelwinOverlay = document.getElementById('game-levelwin-overlay');
+  const gameoverOverlay = document.getElementById('game-over-overlay');
+  const celebrationModal = document.getElementById('modal-final-celebration');
+
+  // Initialize Canvas Game Engine
+  gameInstance = new BirthdayQuestGame(canvas, {
+    onStateChange: (state, info) => {
+      // Update HUD
+      if (scoreEl) scoreEl.textContent = info.score || 0;
+      if (livesEl && info.lives !== undefined) {
+        livesEl.textContent = "💖".repeat(Math.max(0, info.lives)) || "🖤";
+      }
+      if (levelNameEl && info.level) {
+        const names = [
+          "Level 1: Balloon Garden 🎈",
+          "Level 2: Candy Cloud Kingdom ☁️",
+          "Level 3: Starry Birthday Night ⭐"
+        ];
+        levelNameEl.textContent = names[info.level - 1] || `Level ${info.level}`;
+      }
+
+      // Update Power-up badge
+      if (gameInstance.player.powerUp) {
+        powerupBadge.classList.remove('hidden');
+        const p = gameInstance.player.powerUp;
+        powerupIcon.textContent = p === 'wings' ? '🌈' : p === 'speed' ? '⚡' : p === 'magnet' ? '🧲' : '🛡️';
+        powerupLabel.textContent = `${p.toUpperCase()} (${gameInstance.player.powerUpTime}s)`;
+      } else {
+        powerupBadge.classList.add('hidden');
+      }
+
+      // Handle Overlay Visibilities
+      pauseOverlay.classList.toggle('hidden', state !== 'PAUSED');
+      gameoverOverlay.classList.toggle('hidden', state !== 'GAME_OVER');
+
+      if (state === 'LEVEL_WIN') {
+        levelwinOverlay.classList.remove('hidden');
+        triggerConfettiBurst();
+        const levelMsg = document.getElementById('levelwin-msg');
+        if (levelMsg) {
+          levelMsg.textContent = `Woohoo! Level ${info.level} complete! Score: ${info.score} pts 🎉`;
+        }
+      } else {
+        levelwinOverlay.classList.add('hidden');
+      }
+    },
+    onFinalCelebration: (results) => {
+      // Open Final Celebration Modal on Level 3 Completion!
+      if (celebrationModal) {
+        celebrationModal.classList.remove('hidden');
+      }
+      audioSynth.playVictorySong();
+      triggerConfettiBurst();
+      setTimeout(triggerConfettiBurst, 800);
+      setTimeout(triggerConfettiBurst, 1600);
+
+      const statsEl = document.getElementById('celebration-stats');
+      if (statsEl) {
+        statsEl.textContent = `🌟 Final Score: ${results.score} points | Total Time: ${results.time}s 🌟`;
+      }
+
+      // Start Fireworks Canvas Animation
+      initCelebrationFireworks();
+    }
+  });
+
+  // HUD Timer Update Interval
+  setInterval(() => {
+    if (gameInstance && gameInstance.state === 'PLAYING' && timerEl) {
+      timerEl.textContent = `${gameInstance.levelTime}s`;
+    }
+  }, 500);
+
+  // Button Handlers
+  const startBtn = document.getElementById('btn-start-game');
+  if (startBtn) {
+    startBtn.onclick = () => {
+      startOverlay.classList.add('hidden');
+      gameInstance.startLevel(0);
+    };
+  }
+
+  const pauseBtn = document.getElementById('btn-game-pause');
+  if (pauseBtn) {
+    pauseBtn.onclick = () => gameInstance.togglePause();
+  }
+
+  const resumeBtn = document.getElementById('btn-resume-game');
+  if (resumeBtn) {
+    resumeBtn.onclick = () => gameInstance.togglePause();
+  }
+
+  const restartBtn = document.getElementById('btn-restart-level');
+  if (restartBtn) {
+    restartBtn.onclick = () => {
+      pauseOverlay.classList.add('hidden');
+      gameInstance.startLevel(gameInstance.currentLevelIndex);
+    };
+  }
+
+  const nextLevelBtn = document.getElementById('btn-next-level');
+  if (nextLevelBtn) {
+    nextLevelBtn.onclick = () => {
+      levelwinOverlay.classList.add('hidden');
+      gameInstance.startLevel(gameInstance.currentLevelIndex + 1);
+    };
+  }
+
+  const retryBtn = document.getElementById('btn-retry-game');
+  if (retryBtn) {
+    retryBtn.onclick = () => {
+      gameoverOverlay.classList.add('hidden');
+      gameInstance.score = 0;
+      gameInstance.lives = 3;
+      gameInstance.startLevel(0);
+    };
+  }
+
+  // Mobile Touch Controls
+  const setupTouchBtn = (id, dir) => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+
+    const startHandler = (e) => {
+      e.preventDefault();
+      btn.classList.add('active');
+      gameInstance.setControlState(dir, true);
+    };
+
+    const endHandler = (e) => {
+      e.preventDefault();
+      btn.classList.remove('active');
+      gameInstance.setControlState(dir, false);
+    };
+
+    btn.addEventListener('touchstart', startHandler, { passive: false });
+    btn.addEventListener('touchend', endHandler, { passive: false });
+    btn.addEventListener('mousedown', startHandler);
+    btn.addEventListener('mouseup', endHandler);
+    btn.addEventListener('mouseleave', endHandler);
+  };
+
+  setupTouchBtn('btn-touch-left', 'left');
+  setupTouchBtn('btn-touch-right', 'right');
+  setupTouchBtn('btn-touch-jump', 'jump');
+
+  // Final Celebration Modal Buttons
+  const playAgainBtn = document.getElementById('btn-celebration-play-again');
+  if (playAgainBtn) {
+    playAgainBtn.onclick = () => {
+      if (celebrationModal) celebrationModal.classList.add('hidden');
+      gameInstance.score = 0;
+      gameInstance.lives = 3;
+      gameInstance.startLevel(0);
+    };
+  }
+
+  const galleryBtn = document.getElementById('btn-celebration-gallery');
+  if (galleryBtn) {
+    galleryBtn.onclick = () => {
+      if (celebrationModal) celebrationModal.classList.add('hidden');
+      switchToTab('tab-gallery');
+    };
+  }
+}
+
+/* ==================== CELEBRATION FIREWORKS SIMULATION ==================== */
+function initCelebrationFireworks() {
+  const canvas = document.getElementById('celebration-fireworks-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
+
+  const particles = [];
+  const colors = ['#f472b6', '#a78bfa', '#38bdf8', '#fde047', '#4ade80', '#fbbf24'];
+
+  function createFirework() {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * (canvas.height * 0.5) + 40;
+    const count = 40;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.PI * 2 / count) * i;
+      const speed = Math.random() * 4 + 2;
+      particles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        alpha: 1,
+        color,
+        size: Math.random() * 3 + 2
+      });
+    }
+  }
+
+  // Spawn fireworks
+  const interval = setInterval(createFirework, 400);
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.05; // gravity
+      p.alpha -= 0.015;
+
+      if (p.alpha <= 0) {
+        particles.splice(i, 1);
+      } else {
+        ctx.save();
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    const modal = document.getElementById('modal-final-celebration');
+    if (modal && !modal.classList.contains('hidden')) {
+      requestAnimationFrame(animate);
+    } else {
+      clearInterval(interval);
+    }
+  }
+
+  createFirework();
+  animate();
+}
+
